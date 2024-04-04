@@ -1,0 +1,55 @@
+---
+- name: Convert webpages to markdown documents
+  hosts: localhost
+  gather_facts: false
+  vars:
+    source_directory: html
+    target_directory: markdown
+    webpage_url_file: webpage-urls.txt
+
+  tasks:
+    - name: Create a directory to store downloaded webpages
+      ansible.builtin.file:
+        path: "{{ source_directory }}"
+        state: directory
+        mode: "0755"
+
+    - name: Create a directory to store converted markdown
+      ansible.builtin.file:
+        path: "{{ target_directory }}"
+        state: directory
+        mode: "0755"
+
+    - name: Read webpage URLs
+      ansible.builtin.slurp:
+        src: "{{ webpage_url_file }}"
+      register: urls_content
+
+    - name: Convert webpage URLs to string
+      ansible.builtin.set_fact:
+        urls_list: "{{ (urls_content['content'] | b64decode).split('\n') | select | list }}"
+
+    - name: Download webpages to the source directory as HTML
+      ansible.builtin.uri:
+        url: "{{ item }}"
+        dest: "{{ source_directory }}/{{ item | basename }}.html"
+      with_items: "{{ urls_list }}"
+
+    - name: Register downloaded webpages
+      ansible.builtin.find:
+        paths: html
+        recurse: true
+        patterns: "*.html"
+      register: html_files
+
+    - name: Loop through HTML files and convert to Markdown
+      ansible.builtin.shell:
+        cmd: "pandoc -s '{{ item.path }}' -o '{{ target_directory }}/{{ item.path | basename | regex_replace(\"\\.html$\", '.md') }}'"
+      with_items: "{{ html_files.files }}"
+      changed_when: false
+
+    - name: Remove downloaded webpages
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: absent
+      loop: "{{ html_files.files }}"
