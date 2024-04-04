@@ -1,7 +1,7 @@
 https://www.ansible.com/blog/the-future-of-ansible-content-delivery
 https://www.ansible.com/blog/migrating-existing-content-into-a-dedicated-ansible-collection
-https://www.ansible.com/blog/introducing-the-ansible-content-collection-for-red-hat-openshift
-https://www.ansible.com/blog/automation-controller-workflow-deployment-as-code
 https://www.ansible.com/blog/getting-started-with-ansible.utils-collection-for-playbook-creators-part-1
 https://www.ansible.com/blog/getting-started-with-aws-ansible-module-development
 https://www.ansible.com/blog/red-hat-and-ibm-and-the-ansible-community
+https://www.ansible.com/blog/ansible-contributor-summit-durham-2023
+https://www.ansible.com/blog/ansible-community-day-berlin-2023
